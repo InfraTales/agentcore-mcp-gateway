@@ -4,6 +4,7 @@ import * as path from 'node:path';
 import * as cdk from 'aws-cdk-lib';
 import { Match, Template } from 'aws-cdk-lib/assertions';
 import { AwsSolutionsChecks } from 'cdk-nag';
+import { DEFAULT_NEGOTIATED_PROTOCOL_VERSION, LATEST_PROTOCOL_VERSION } from '@modelcontextprotocol/sdk/types.js';
 import { BUILD_DIR, OrdersMcpStack } from '../../infra/lib/orders-mcp-stack';
 import { ADMIN_SCOPE, POLICIES } from '../../infra/lib/policies';
 import { ADMIN_TARGET, ADMIN_TOOLS, READ_TARGET, READ_TOOLS } from '../../app/src/tools/definitions';
@@ -46,6 +47,14 @@ describe('gateway', () => {
     const jwt = gw.AuthorizerConfiguration.CustomJWTAuthorizer;
     expect(JSON.stringify(jwt.DiscoveryUrl)).toContain('/.well-known/openid-configuration');
     expect(jwt.AllowedClients).toEqual([{ Ref: expect.stringMatching(/^AgentPoolReaderAgent/) }, { Ref: expect.stringMatching(/^AgentPoolOpsAgent/) }]);
+  });
+
+  it('accepts requests with no MCP-Protocol-Version header, which the gateway treats as 2025-03-26', () => {
+    const versions = one('AWS::BedrockAgentCore::Gateway').Properties.ProtocolConfiguration.Mcp.SupportedVersions;
+    expect(versions).toContain('2025-03-26');
+    // The official SDK client sends initialize with no header, then the version it negotiated.
+    expect(versions).toContain(DEFAULT_NEGOTIATED_PROTOCOL_VERSION);
+    expect(versions).toContain(LATEST_PROTOCOL_VERSION);
   });
 
   it('enforces the policy engine by default, and LOG_ONLY is opt-in', () => {

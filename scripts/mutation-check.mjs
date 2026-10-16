@@ -27,6 +27,7 @@ const MUTANTS = [
   ['reader function can write', 'infra/lib/orders-mcp-stack.ts', "actions: ['dynamodb:GetItem', 'dynamodb:Query'],", "actions: ['dynamodb:GetItem', 'dynamodb:Query', 'dynamodb:UpdateItem'],", infra],
   ['deployed schema drifts from local', 'infra/lib/orders-mcp-stack.ts', 'toolSchema: toolSchema(tools)', "toolSchema: toolSchema(tools.map((t) => ({ ...t, description: t.description + '.' })))", infra],
   ['policy created before targets', 'infra/lib/orders-mcp-stack.ts', 'policy.addResourceDependency(readTarget);', '', infra],
+  ['header-less MCP requests rejected', 'infra/lib/orders-mcp-stack.ts', "['2025-03-26', '2025-06-18', '2025-11-25']", "['2025-06-18', '2025-11-25']", infra],
   ['any Cognito client accepted', 'infra/lib/orders-mcp-stack.ts', 'allowedClients: [readerClient.userPoolClientId, opsClient.userPoolClientId],', '', infra],
 ];
 

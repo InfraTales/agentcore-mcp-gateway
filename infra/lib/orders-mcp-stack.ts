@@ -12,6 +12,13 @@ import { CUSTOMER_INDEX } from '../../app/src/orders/store';
 import { ADMIN_TARGET, ADMIN_TOOLS, READ_TARGET, READ_TOOLS, type ToolDefinition } from '../../app/src/tools/definitions';
 import { ADMIN_SCOPE, POLICIES, READ_SCOPE } from './policies';
 
+
+/**
+ * MCP versions the gateway advertises. 2025-03-26 must stay: it is the version the gateway
+ * assumes when a request has no MCP-Protocol-Version header.
+ */
+export const MCP_PROTOCOL_VERSIONS = ['2025-03-26', '2025-06-18', '2025-11-25'] as const;
+
 export interface OrdersMcpStackProps extends cdk.StackProps {
   /** Cognito hosted domain prefix. Must be unique in the Region. */
   readonly domainPrefix?: string;
@@ -147,7 +154,10 @@ export class OrdersMcpStack extends cdk.Stack {
       name: 'orders-mcp',
       description: 'Order tools for agents, backed by existing Lambda functions.',
       protocolType: 'MCP',
-      protocolConfiguration: { mcp: { supportedVersions: ['2025-06-18', '2025-11-25'] } },
+      // A request without an MCP-Protocol-Version header is treated as 2025-03-26, and the
+      // gateway rejects it if that version isn't listed. MCP clients send initialize before they
+      // know a version, so the official TypeScript SDK's first request has no header.
+      protocolConfiguration: { mcp: { supportedVersions: [...MCP_PROTOCOL_VERSIONS] } },
       authorizerType: 'CUSTOM_JWT',
       authorizerConfiguration: {
         customJwtAuthorizer: {
