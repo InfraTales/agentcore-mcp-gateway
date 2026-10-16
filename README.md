@@ -4,6 +4,10 @@ This repo takes two ordinary AWS Lambda functions from an order system and gives
 
 It's written in AWS CDK (TypeScript). The tests run the official MCP TypeScript SDK client against a local MCP server built from the same tool definitions and handlers, and they run the real DynamoDB condition expressions against DynamoDB Local.
 
+## Architecture
+
+![Agent gets a Cognito token, calls AgentCore Gateway, Policy checks it, a Lambda tool runs](docs/architecture.png)
+
 ## What the agents get
 
 | Tool name an agent sees | Lambda function | What it does |
