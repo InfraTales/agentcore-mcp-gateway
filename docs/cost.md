@@ -33,7 +33,7 @@ Two assumptions sit in that table. We count tool lists as policy checks too, whi
 
 ## The token trap
 
-Cognito charges for every machine-to-machine token request, with no free tier. If each agent session asks for a new token instead of reusing one, the same month needs 25,000 tokens: $56.25. That's nine times the rest of the bill. Cache the token and refresh it a few minutes before it expires.
+Cognito charges for every machine-to-machine token request, with no free tier. If each agent session asks for a new token instead of reusing one, the same month needs 25,000 tokens: $56.25. That's about 18 times the other lines combined ($3.06), and it takes the month from $6.30 to about $59. Cache the token and refresh it a few minutes before it expires.
 
 ## What would change the numbers
 
