@@ -3,7 +3,7 @@ import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['cdk.out/', 'build/', 'node_modules/', 'coverage/', '*.js', '*.mjs'] },
+  { ignores: ['cdk.out/', 'build/', 'node_modules/', 'coverage/', '*.js', 'eslint.config.mjs'] },
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {
@@ -30,5 +30,11 @@ export default tseslint.config(
       '@typescript-eslint/require-await': 'off',
       '@typescript-eslint/unbound-method': 'off',
     },
+  },
+  {
+    // Plain Node.js scripts outside the TypeScript project: lint without type information.
+    files: ['scripts/**/*.mjs'],
+    ...tseslint.configs.disableTypeChecked,
+    languageOptions: { parserOptions: { projectService: false, project: false }, globals: { console: 'readonly', process: 'readonly' } },
   },
 );
