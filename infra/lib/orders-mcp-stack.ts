@@ -152,7 +152,8 @@ export class OrdersMcpStack extends cdk.Stack {
       authorizerConfiguration: {
         customJwtAuthorizer: {
           discoveryUrl: `https://cognito-idp.${this.region}.amazonaws.com/${userPool.userPoolId}/.well-known/openid-configuration`,
-          // Cognito access tokens carry client_id but no aud claim, so check the client.
+          // Cognito access tokens only carry aud when you request a resource binding.
+          // client_id is always there, so check the client.
           allowedClients: [readerClient.userPoolClientId, opsClient.userPoolClientId],
         },
       },
