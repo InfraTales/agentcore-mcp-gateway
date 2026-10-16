@@ -6,7 +6,7 @@ An agent that can cancel orders is a risk, so this stack checks every call in fo
 
 The gateway uses `CUSTOM_JWT` inbound auth. It reads Cognito's OpenID discovery document, checks each access token's signature and expiry, and only accepts tokens whose `client_id` is one of the two agent app clients.
 
-We check `allowedClients`, not `allowedAudience`. Cognito access tokens carry a `client_id` claim but no `aud` claim, so an audience check would reject every token.
+We check `allowedClients`, not `allowedAudience`. Every Cognito access token has a `client_id` claim. It gets an `aud` claim only when the client asks for a resource binding, and this stack's agents don't, so an audience check would reject all of their tokens. In a machine-to-machine token, `sub` and `client_id` hold the same value.
 
 The user pool has no self sign-up and no human users. Each agent app client uses the client-credentials flow with a secret. That's why we acknowledged cdk-nag's password, MFA and threat-protection rules, and wrote the reason next to each one.
 
