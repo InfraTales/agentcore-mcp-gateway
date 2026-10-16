@@ -8,7 +8,7 @@ Prices are us-east-1, checked on 2026-10-16. Gateway, Lambda, Cognito and Dynamo
 |---|---|---|
 | Gateway MCP operations (ListTools, InvokeTool, Ping) | $0.005 per 1,000 | None |
 | Gateway semantic search calls | $0.025 per 1,000 | None. This stack doesn't turn search on |
-| Gateway tool indexing | $0.02 per 100 tools a month | None |
+| Gateway tool indexing, for semantic search | $0.02 per 100 tools a month | None |
 | AgentCore Policy authorization requests | $0.025 per 1,000 | None |
 | Cognito machine-to-machine token requests | $2.25 per 1,000 (first 250,000) | None. App clients cost nothing |
 | Lambda arm64 | $0.20 per million requests, $0.0000133334 per GB-second | 1 million requests and 400,000 GB-seconds a month |
@@ -38,5 +38,5 @@ Cognito charges for every machine-to-machine token request, with no free tier. I
 ## What would change the numbers
 
 - Semantic search adds $0.025 per 1,000 search calls. You can only turn it on when you create the gateway.
-- Indexing more tools costs $0.0002 per tool a month, so this stack's three tools cost $0.0006.
+- Tool indexing is $0.0002 per tool a month. AWS ties it to semantic search, which this stack leaves off; if you turn search on, three tools add $0.0006.
 - Real traffic brings log volume, retries and larger items, which all add a little. Check Cost Explorer after the first week.
