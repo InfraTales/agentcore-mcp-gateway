@@ -13,6 +13,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 const engine = ['jest', '-c', 'jest.engine.config.js'];
 const unit = ['jest', 'test/unit', 'test/mcp'];
 const infra = ['jest', 'test/infra'];
+const adversarial = ['jest', 'test/adversarial'];
 
 const MUTANTS = [
   ['cancel condition checks existence only', 'app/src/orders/store.ts', "ConditionExpression: '#s = :open'", "ConditionExpression: 'attribute_exists(orderId)'", engine],
@@ -29,6 +30,11 @@ const MUTANTS = [
   ['policy created before targets', 'infra/lib/orders-mcp-stack.ts', 'policy.addResourceDependency(readTarget);', '', infra],
   ['header-less MCP requests rejected', 'infra/lib/orders-mcp-stack.ts', "['2025-03-26', '2025-06-18', '2025-11-25']", "['2025-06-18', '2025-11-25']", infra],
   ['any Cognito client accepted', 'infra/lib/orders-mcp-stack.ts', 'allowedClients: [readerClient.userPoolClientId, opsClient.userPoolClientId],', '', infra],
+  // Adversarial suite (test/adversarial): safeguards an injected tool call would probe.
+  ['order ID pattern not anchored at the end', 'app/src/tools/validate.ts', 'const ORDER_ID = /^ord-[0-9]{1,12}$/;', 'const ORDER_ID = /^ord-[0-9]{1,12}/;', adversarial],
+  ['cancel reason handed back to readers', 'app/src/orders/tools.ts', '    createdAt: o.createdAt,\n', '    createdAt: o.createdAt,\n    cancelReason: (o as { cancelReason?: string }).cancelReason,\n', adversarial],
+  ['scope tag read without hasTag', 'infra/lib/policies.ts', '  principal.hasTag("scope") &&\n', '', adversarial],
+  ['cancel policy matches any admin scope', 'infra/lib/policies.ts', 'like "*${ADMIN_SCOPE}*"', 'like "*admin*"', adversarial],
 ];
 
 const filter = process.argv[2];

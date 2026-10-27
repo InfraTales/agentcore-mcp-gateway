@@ -56,7 +56,7 @@ Want to watch policy decisions before they block anything? Deploy with `-c polic
 
 | Command | What runs | Needs |
 |---|---|---|
-| `npm test` | Unit, handler flow, MCP contract, CDK template, cdk-nag and bundle tests | Nothing |
+| `npm test` | Unit, handler flow, MCP contract, adversarial, CDK template, cdk-nag and bundle tests | Nothing |
 | `npm run test:engine` | Condition expressions and the full MCP path against DynamoDB Local | Docker |
 | `npm run smoke` | Checks against your deployed stack | A deploy |
 
@@ -68,6 +68,8 @@ AWS_ENDPOINT_URL_DYNAMODB=http://127.0.0.1:8020 npm run test:engine
 ```
 
 We broke each safeguard on purpose once and confirmed a test failed (`npm run test:mutation`, with DynamoDB Local running). That run also turned up a condition clause that did nothing, so we removed it; the comment on `OrderStore.cancel` has the story.
+
+The adversarial tests in `test/adversarial/` send the tool calls an agent might write after reading an injected instruction, and run the Cedar policies against hostile requests. They also document two known limits. [docs/adversarial-tests.md](docs/adversarial-tests.md) lists every case and what it does not prove.
 
 To try the tools with an MCP client on your laptop:
 
@@ -84,6 +86,7 @@ AgentCore Gateway, AgentCore Policy and Cognito machine-to-machine tokens have n
 ## More docs
 
 - [docs/security.md](docs/security.md): the auth layers and what each one stops
+- [docs/adversarial-tests.md](docs/adversarial-tests.md): hostile tool calls and policy requests, and the two known limits they document
 - [docs/cost.md](docs/cost.md): prices, a worked month, and the token trap
 - [docs/runbook.md](docs/runbook.md): what to check when a tool call fails
 
